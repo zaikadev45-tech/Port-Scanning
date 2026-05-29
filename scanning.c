@@ -9,7 +9,6 @@
 
 int main(int argc,char* argv[]){
   int sock;
-  int port;
   int lenght=0;
   struct sockaddr_in temp; 
   struct hostent *h;
@@ -29,14 +28,14 @@ int main(int argc,char* argv[]){
     printf("Gethostbyname failed\n");
     exit(1);
   }
-  bcopy(h->h_addr,&temp.sin_addr,h->h_length);
-  for(port=0;port<65536;port++){
+  memcpy(&temp.sin_addr, h->h_addr, h->h_length);
+  for(int port=0;port<65536;port++){
      sock=socket(AF_INET,SOCK_STREAM,0);
      temp.sin_port=htons(port);
      if(connect(sock, (struct sockaddr*) &temp, sizeof(temp)) < 0){
-	// connection refused, then the cycle continues for try new connection with the next port
+	    // connection refused, then the cycle continues for try new connection with the next port
         close(sock);
-	continue;
+    	continue;
      }
      else{
         printf("Active Port --> %d\n",port);
